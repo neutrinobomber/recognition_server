@@ -55,7 +55,7 @@ class Server(object):
     def encode(self):
         if cherrypy.request.method == 'POST':
             data = cherrypy.request.json
-            if data['image']:
+            if data['image'] and len(data['image']) > 0:
                 image = decode_image(data['image'])
                 processed = process_image(image)
                 encodings = get_encodings(processed)
@@ -71,7 +71,7 @@ class Server(object):
     def verify(self):
         if cherrypy.request.method == 'POST':
             data = cherrypy.request.json
-            if data['image'] is not None and data['encoding'] is not None:
+            if data['image'] and data['encoding'] and len(data['image']) > 0 and len(data['encoding']) > 0:
                 image = decode_image(data['image'])
                 processed = process_image(image)
                 unknown_encodings = get_encodings(processed)
