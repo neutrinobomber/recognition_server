@@ -17,7 +17,8 @@ def decode_image(encoded):
 
 def encode_encoding(encoding):
     encoded = base64.b64encode(encoding)
-    return encoded
+    string = encoded.decode('utf-8')
+    return string
 
 
 def decode_encoding(encoding):
