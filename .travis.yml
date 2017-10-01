@@ -1,5 +1,8 @@
 language: python
 
+python:
+  - 3.6
+  
 sudo: required
 
 services:
@@ -13,3 +16,5 @@ after_success:
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" registry.heroku.com;
     docker push server;
     fi
+
+install:
