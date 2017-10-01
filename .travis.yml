@@ -1,8 +1,5 @@
-language: python
+language: true
 
-python:
-  - 3.6
-  
 sudo: required
 
 services:
