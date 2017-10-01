@@ -1,0 +1,5 @@
+flask
+gunicorn
+face_recognition
+pillow
+numpy

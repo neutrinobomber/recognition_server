@@ -1,9 +1,12 @@
+from flask import Flask
+from flask import request, jsonify
+import face_recognition
 from PIL import Image
 from io import BytesIO
-import face_recognition
-import cherrypy
 import base64
 import numpy
+
+app = Flask(__name__)
 
 
 def decode_image(encoded):
@@ -44,48 +47,41 @@ def process_image(image):
     return new
 
 
-class Server(object):
-    @cherrypy.expose
-    def index(self):
-        return 'Hello!'
-
-    @cherrypy.expose
-    @cherrypy.tools.json_in()
-    @cherrypy.tools.json_out()
-    def encode(self):
-        if cherrypy.request.method == 'POST':
-            data = cherrypy.request.json
-            if data['image'] and len(data['image']) > 0:
-                image = decode_image(data['image'])
-                processed = process_image(image)
-                encodings = get_encodings(processed)
-
-                if len(encodings) > 0:
-                    encoded = encode_encoding(encodings[0])
-                    return {'encoding': encoded}
-        return {'message': 'error'}
-
-    @cherrypy.expose
-    @cherrypy.tools.json_in()
-    @cherrypy.tools.json_out()
-    def verify(self):
-        if cherrypy.request.method == 'POST':
-            data = cherrypy.request.json
-            if data['image'] and data['encoding'] and len(data['image']) > 0 and len(data['encoding']) > 0:
-                image = decode_image(data['image'])
-                processed = process_image(image)
-                unknown_encodings = get_encodings(processed)
-                known_encoding = decode_encoding(data['encoding'])
-
-                if len(unknown_encodings) > 0:
-                    result = verify_identity(known_encoding, unknown_encodings[0])
-                    return {'same': str(result)}
-        return {'message': 'error'}
+@app.route('/')
+def hello():
+    return 'Hello!'
 
 
-if __name__ == '__main__':
-    cherrypy.config.update({'server.socket_host': '0.0.0.0',
-                            'server.socket_port': 3000,
-                            'log.screen': True,
-                            'environment': 'production'})
-    cherrypy.quickstart(Server(), '/')
+@app.route('/encode', methods=['POST'])
+def encode():
+    data = request.json
+    if data['image'] and len(data['image']) > 0:
+        image = decode_image(data['image'])
+        processed = process_image(image)
+        encodings = get_encodings(processed)
+
+        if len(encodings) > 0:
+            encoded = encode_encoding(encodings[0])
+            return jsonify({'encoding': encoded})
+
+    return jsonify({'message': 'ivalid data'})
+
+
+@app.route('/verify', methods=['POST'])
+def verify():
+    data = request.json
+    if data['image'] and data['encoding'] and len(data['image']) > 0 and len(data['encoding']) > 0:
+        image = decode_image(data['image'])
+        processed = process_image(image)
+        unknown_encodings = get_encodings(processed)
+        known_encoding = decode_encoding(data['encoding'])
+
+        if len(unknown_encodings) > 0:
+            result = verify_identity(known_encoding, unknown_encodings[0])
+            return jsonify({'same': str(result)})
+
+    return jsonify({'message': 'invalid data'})
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=3000)
