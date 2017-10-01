@@ -18,3 +18,5 @@ after_success:
     fi
 
 install: true
+
+script: true
