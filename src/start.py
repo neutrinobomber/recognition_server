@@ -5,6 +5,7 @@ from PIL import Image
 from io import BytesIO
 import base64
 import numpy
+import time
 
 app = Flask(__name__)
 
@@ -59,7 +60,10 @@ def encode():
     if data['image'] and len(data['image']) > 0:
         image = decode_image(data['image'])
         processed = process_image(image)
+
+        start = time.perf_counter()
         encodings = get_encodings(processed)
+        print(time.perf_counter() - start)
 
         if len(encodings) > 0:
             encoded = encode_encoding(encodings[0])
@@ -74,8 +78,11 @@ def verify():
     if data['image'] and data['encoding'] and len(data['image']) > 0 and len(data['encoding']) > 0:
         image = decode_image(data['image'])
         processed = process_image(image)
+
+        start = time.perf_counter()
         unknown_encodings = get_encodings(processed)
         known_encoding = decode_encoding(data['encoding'])
+        print(time.perf_counter() - start)
 
         if len(unknown_encodings) > 0:
             result = verify_identity(known_encoding, unknown_encodings[0])
