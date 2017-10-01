@@ -13,8 +13,9 @@ before_install:
 
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" registry.heroku.com;
-    docker push server;
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" $DOCKER_REGISTRY;
+    docker tag server $DOCKER_REGISTRY/$APP_NAME/$APP_TYPE;
+    docker push $DOCKER_REGISTRY/$APP_NAME/$APP_TYPE;
     fi
 
 install: true
