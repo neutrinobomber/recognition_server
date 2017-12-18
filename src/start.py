@@ -6,8 +6,20 @@ from io import BytesIO
 import base64
 import numpy
 import time
+import threading
+import urllib.request
+import os
+
 
 app = Flask(__name__)
+
+
+def keep_alive():
+    threading.Timer(300, keep_alive).start()
+    try:
+        urllib.request.urlopen(os.environ['URL'])
+    except Exception as e:
+        print(str(e))
 
 
 def decode_image(encoded):
@@ -92,4 +104,5 @@ def verify():
 
 
 if __name__ == "__main__":
+    keep_alive()
     app.run(host='0.0.0.0', port=3000)
