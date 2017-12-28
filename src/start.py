@@ -15,10 +15,16 @@ app = Flask(__name__)
 
 
 def keep_alive():
-    threading.Timer(300, keep_alive).start()
+    threading.Timer(60, keep_alive).start()
     try:
-        urllib.request.urlopen(os.environ['URL'])
+        url = os.environ.get('URL')
+        if url is None:
+            print('Missing url!')
+        else:
+            print('Requesting.')
+            print(urllib.request.urlopen(url).read())
     except Exception as e:
+        print('An error occurred!')
         print(str(e))
 
 
@@ -79,9 +85,9 @@ def encode():
 
         if len(encodings) > 0:
             encoded = encode_encoding(encodings[0])
-            return jsonify({'encoding': encoded})
+            return jsonify({'success': 'true', 'encoding': encoded})
 
-    return jsonify({'message': 'ivalid data'})
+    return jsonify({'success': 'false', 'message': 'ivalid data'})
 
 
 @app.route('/verify', methods=['POST'])
@@ -98,9 +104,9 @@ def verify():
 
         if len(unknown_encodings) > 0:
             result = verify_identity(known_encoding, unknown_encodings[0])
-            return jsonify({'same': str(result)})
+            return jsonify({'success': 'true', 'same': str(result)})
 
-    return jsonify({'message': 'invalid data'})
+    return jsonify({'success': 'false', 'message': 'invalid data'})
 
 
 if __name__ == "__main__":
