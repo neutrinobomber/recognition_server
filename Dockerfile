@@ -19,13 +19,13 @@ RUN apt-get install -y --fix-missing \
     libswscale-dev \
     pkg-config \
     python3-dev \
-    python3-numpy \
     software-properties-common \
     zip \
     sudo \
     python3-pip \
     libopenblas-dev \
-    && apt-get clean && rm -rf /tmp/* /var/tmp/*
+    && apt-get clean && rm -rf /tmp/* /var/tmp/* \
+    && pip3 install numpy
 
 RUN cd ~ && \
     mkdir -p dlib && \
