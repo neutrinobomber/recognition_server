@@ -60,7 +60,7 @@ def hello():
 def encode():
     try:
         data = request.get_json()
-        if data['image'] and len(data['image']) > 0:
+        if data and 'image' in data and len(data['image']) > 0:
             image = decode_image(data['image'])
             processed = process_image(image)
 
@@ -84,7 +84,7 @@ def encode():
 def verify():
     try:
         data = request.get_json()
-        if data['image'] and data['encoding'] and len(data['image']) > 0 and len(data['encoding']) > 0:
+        if data and 'image' in data and 'encoding' in data and len(data['image']) > 0 and len(data['encoding']) > 0:
             image = decode_image(data['image'])
             processed = process_image(image)
 
