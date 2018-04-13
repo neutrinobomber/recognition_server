@@ -60,21 +60,22 @@ def hello():
 def encode():
     try:
         data = request.get_json()
-        if data and 'image' in data and len(data['image']) > 0:
-            image = decode_image(data['image'])
-            processed = process_image(image)
+        if data and 'image' in data:
+            if len(data['image']) > 0:
+                image = decode_image(data['image'])
+                processed = process_image(image)
 
-            start = time.perf_counter()
-            encodings = get_encodings(processed)
-            print(time.perf_counter() - start)
+                start = time.perf_counter()
+                encodings = get_encodings(processed)
+                print(time.perf_counter() - start)
 
-            if len(encodings) > 0:
-                encoded = encode_encoding(encodings[0])
-                return jsonify({'success': True, 'message': 'Encoded a face!', 'encoding': encoded})
-            else:
-                return jsonify({'success': False, 'message': 'Could not find any faces!'})
-        else:
-            return jsonify({'success': False, 'message': 'Invalid data!'})
+                if len(encodings) > 0:
+                    encoded = encode_encoding(encodings[0])
+                    return jsonify({'success': True, 'message': 'Encoded a face!', 'encoding': encoded})
+                else:
+                    return jsonify({'success': False, 'message': 'Could not find any faces!'})
+
+        return jsonify({'success': False, 'message': 'Invalid data!'})
     except Exception as e:
         print(str(e))
         return jsonify({'success': False, 'message': 'Internal error!'})
@@ -84,22 +85,23 @@ def encode():
 def verify():
     try:
         data = request.get_json()
-        if data and 'image' in data and 'encoding' in data and len(data['image']) > 0 and len(data['encoding']) > 0:
-            image = decode_image(data['image'])
-            processed = process_image(image)
+        if data and 'image' in data and 'encoding' in data:
+            if len(data['image']) > 0 and len(data['encoding']) > 0:
+                image = decode_image(data['image'])
+                processed = process_image(image)
 
-            start = time.perf_counter()
-            unknown_encodings = get_encodings(processed)
-            known_encoding = decode_encoding(data['encoding'])
-            print(time.perf_counter() - start)
+                start = time.perf_counter()
+                unknown_encodings = get_encodings(processed)
+                known_encoding = decode_encoding(data['encoding'])
+                print(time.perf_counter() - start)
 
-            if len(unknown_encodings) > 0:
-                result = verify_identity(known_encoding, unknown_encodings[0])
-                return jsonify({'success': True, 'message': 'Verified!', 'same': str(result)})
-            else:
-                return jsonify({'success': False, 'message': 'Could not find any faces!'})
-        else:
-            return jsonify({'success': False, 'message': 'Invalid data!'})
+                if len(unknown_encodings) > 0:
+                    result = verify_identity(known_encoding, unknown_encodings[0])
+                    return jsonify({'success': True, 'message': 'Verified!', 'same': str(result)})
+                else:
+                    return jsonify({'success': False, 'message': 'Could not find any faces!'})
+
+        return jsonify({'success': False, 'message': 'Invalid data!'})
     except Exception as e:
         print(str(e))
         return jsonify({'success': False, 'message': 'Internal error!'})
