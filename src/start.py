@@ -42,7 +42,7 @@ def verify_identity(known_encoding, unknown_encoding):
 
 
 def process_image(image):
-    size = 300, 300
+    size = 1024, 1024
     image = Image.open(image)
     image.thumbnail(size)
     image = image.convert('RGB')
