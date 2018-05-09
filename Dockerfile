@@ -1,4 +1,4 @@
-FROM python:3.6.4-slim-stretch
+FROM python:3.6.5-slim-stretch
 
 RUN apt-get -y update
 RUN apt-get install -y --fix-missing \
@@ -29,7 +29,7 @@ RUN apt-get install -y --fix-missing \
 
 RUN cd ~ && \
     mkdir -p dlib && \
-    git clone -b 'v19.9' --single-branch https://github.com/davisking/dlib.git dlib/ && \
+    git clone -b 'v19.10' --single-branch https://github.com/davisking/dlib.git dlib/ && \
     cd  dlib/ && \
     python3 setup.py install --yes USE_AVX_INSTRUCTIONS
 
