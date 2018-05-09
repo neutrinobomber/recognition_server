@@ -31,7 +31,7 @@ def decode_encoding(encoding):
 
 def get_encodings(file):
     image = face_recognition.load_image_file(file)
-    face_locations = face_recognition.face_locations(image, number_of_times_to_upsample=0, model='cnn')
+    face_locations = face_recognition.face_locations(image)
     face_encodings = face_recognition.face_encodings(image, face_locations)
     return face_encodings
 
@@ -42,12 +42,12 @@ def verify_identity(known_encoding, unknown_encoding):
 
 
 def process_image(image):
-    size = 1024, 1024
+    size = 300, 300
     image = Image.open(image)
-    image.thumbnail(size)
     image = image.convert('RGB')
+    image.thumbnail(size)
     new = BytesIO()
-    image.save(new, 'jpeg')
+    image.save(new, 'JPEG')
     return new
 
 
@@ -71,7 +71,7 @@ def encode():
 
                 if len(encodings) > 0:
                     encoded = encode_encoding(encodings[0])
-                    return jsonify({'success': True, 'message': 'Encoded a face!', 'encoding': encoded})
+                    return jsonify({'success': True, 'encoding': encoded, 'message': 'Encoded a face!'})
                 else:
                     return jsonify({'success': False, 'message': 'Could not find any faces!'})
 
@@ -97,7 +97,7 @@ def verify():
 
                 if len(unknown_encodings) > 0:
                     result = verify_identity(known_encoding, unknown_encodings[0])
-                    return jsonify({'success': True, 'message': 'Verified!', 'same': str(result)})
+                    return jsonify({'success': True, 'same': str(result), 'message': 'Verified!'})
                 else:
                     return jsonify({'success': False, 'message': 'Could not find any faces!'})
 
